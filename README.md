@@ -73,13 +73,13 @@ Images are used behind the scenes to hold all the logic and all the code that co
 
 FROM node
 
+WORKDIR /app
+
 COPY package.json /app 
+
 RUN npm install 
 
 COPY . /app 
-
-WORKDIR /app
-
 
 EXPOSE 80
 
