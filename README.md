@@ -44,4 +44,17 @@ This command will build an docker image for our project. To see the built image 
 
 Now that we have build this image we can run this image on any computer using docker with `docker run hello-docker`. We can also publish this image on docker hub so that anyone can use this image.
 
-You can also run this image on `play with docker` [Play with Docker](https://labs.play-with-docker.com/p/c1ohogre75e000e2vj9g)
+
+## Play With Docker.
+
+You can also run this image on `play with docker` [Play with Docker](https://labs.play-with-docker.com)
+1) `docker version`
+2) `docker pull selvesan/docker101tutorial`
+3) verify the image was pulled with `docker images ` || `docker image ls`
+
+
+## Ubuntu Image.
+1) `docker run ubuntu` This command will run the ubuntu image if it's available on your system and if it's not available it will simply run the command `docker pull ubuntu`
+2) `docker ps` to view the running container. `docker ps -a` to view the running container as well as the stopped container.
+3) `docker run -it ubuntu`. Here the `-it` means the interactive mode.
+
