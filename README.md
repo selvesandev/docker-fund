@@ -101,6 +101,8 @@ Now hit `-t hello-docker .` to create an image based on the instruction mentione
 
 Finally `docker run -p 3000:80 hello-docker`. Here -p is published and 3000 is the local port under which you want to access this application and 80 is the docker container expose port
 
-Close the container `docker stop hello-docker`. `docker ps` to find the container name.
+Close the container `docker stop hello-docker`. `docker ps` to find the container name. `docker start container-name` to restart the stopped container because there is no need of creating contaner everytime.
+
+`docker run -p 3000:80 -d hello-docker` to start the container in detach mode. `docker attach hello-docker` to attach the detached container. `docker log -f container-name` to see the log of a detached container.
 
 
