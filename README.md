@@ -53,8 +53,54 @@ You can also run this image on `play with docker` [Play with Docker](https://lab
 3) verify the image was pulled with `docker images ` || `docker image ls`
 
 
-## Ubuntu Image.
+## Images
+Images are used behind the scenes to hold all the logic and all the code that container needs and then we create instances of the image with the `run` command. Container are the running instannces of those images.
+
+### Ubuntu Image.
 1) `docker run ubuntu` This command will run the ubuntu image if it's available on your system and if it's not available it will simply run the command `docker pull ubuntu`
 2) `docker ps` to view the running container. `docker ps -a` to view the running container as well as the stopped container.
 3) `docker run -it ubuntu`. Here the `-it` means the interactive mode.
+
+
+### Node Image.
+1) `docker run node`
+3) `docker run -it nnode`.
+
+
+## Node JS Example 2
+
+```Dockerfile
+
+FROM node
+
+COPY package.json /app 
+RUN npm install 
+
+COPY . /app 
+
+WORKDIR /app
+
+
+EXPOSE 80
+
+# RUN node server.js # Incorrect because we only want to start a server if we start a container based on the image. Also if we start multile containers based on the same image we also start multiple node service there 
+
+CMD ["node", "server.js"]
+
+```
+
+**COPY . /app** 
+
+Here the `COPY . /app` means copy the first path is outside of the image where the file lives and that should be copied into the image. this is basically the project's root folder containing the Dockerfile excluding the Dockerfile. All the folder / sub folder and files in the ./ directory should be copied into the image i.e /app directory which is inside the image. every container has it's own internal filesystem which is totally detached from your file system and is hidden away inside the docker container. The /app folder will be created if it does not exists.
+
+**WORKDIR /app**
+
+All the commands should be executed in the /app folder inside the container.
+
+Now hit `-t hello-docker .` to create an image based on the instruction mentioned on the `Dockerfile` in the `.` directory.
+
+Finally `docker run -p 3000:80 hello-docker`. Here -p is published and 3000 is the local port under which you want to access this application and 80 is the docker container expose port
+
+Close the container `docker stop hello-docker`. `docker ps` to find the container name.
+
 
