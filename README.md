@@ -53,7 +53,6 @@ EXPOSE 80 # Since the docker environment in isolated and has it's own internal n
 # RUN node server.js # Incorrect because we don't want to run th server in a image we want to do that in container.  We only want to start a server if you starta container based on that image. Therefore use CMD insteand of RUN.
 
 CMD ["node", "server.js"]
-
 ```
 
 Now run the `docker build .` in the folder where your `Dockerfile` is. This will build your image.
@@ -68,14 +67,11 @@ Stop the container with `docker stop container_name`
 **NOTE:** However This image build will not build the code everytime you change your code. You will have to `docker build .` to rebuild this image and `docker run -p 3000:80  new_image`
 
 
-
 **COPY . /app** 
 Here the `COPY . /app` means copy the first path is outside of the image where the file lives and that should be copied into the image. this is basically the project's root folder containing the Dockerfile excluding the Dockerfile. All the folder / sub folder and files in the ./ directory should be copied into the image i.e /app directory which is inside the image. every container has it's own internal filesystem which is totally detached from your file system and is hidden away inside the docker container. The /app folder will be created if it does not exists.
 
 **WORKDIR /app**
 All the commands should be executed in the /app folder inside the container.
-
-
 
 
 ## Managing Images & Container.
@@ -95,7 +91,6 @@ All the commands should be executed in the /app folder inside the container.
 13) `docker cp` Add folder/file to a running container with `docker copy dummy/. container_name:/path_where_to_copy` you can also copy folder/file from docker to your system `docker cp container_name:/path/file local_folder` this will help
 14) Docker Name with `--name`. Build image with detach mode and rm on stop and with a name `docker run -p 3000:80 -d --rm --name selvesan image_name`
 15) A image name has two part name and tag `name:tag` eg: `node:14`. Build a image with name and a tag `docker build -t selvesan:latest .`. The tag name can be nuber or string. Now you can run the image with the name `docker run -p 3000:80 -d -rm --name contaier_name selvesan:latest`
-16) 
 
 
 
