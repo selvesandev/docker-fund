@@ -91,6 +91,7 @@ All the commands should be executed in the /app folder inside the container.
 13) `docker cp` Add folder/file to a running container with `docker copy dummy/. container_name:/path_where_to_copy` you can also copy folder/file from docker to your system `docker cp container_name:/path/file local_folder` this will help
 14) Docker Name with `--name`. Build image with detach mode and rm on stop and with a name `docker run -p 3000:80 -d --rm --name selvesan image_name`
 15) A image name has two part name and tag `name:tag` eg: `node:14`. Build a image with name and a tag `docker build -t selvesan:latest .`. The tag name can be nuber or string. Now you can run the image with the name `docker run -p 3000:80 -d -rm --name contaier_name selvesan:latest`
+16) `docker image prune -a` to delete all the images.
 
 
 
@@ -118,6 +119,13 @@ Run `docker build .` and `docker run -it image_name`
 4) The docker image's name should be the repositories name `docker tag old_name selvesan/node-app`. Here we are renaming the already available image.
 5) `docker login` to login from the terminal
 6) Finally `docker push selvesan/node-app`
+7) `docker pull selvesan/node-app` to pull the docker image. Run the same pull command to update the docker image.
+
+
+
+## Managing Data/Volumes in Images and Container
+...
+
 
 
 
