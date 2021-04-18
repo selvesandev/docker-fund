@@ -161,6 +161,23 @@ To create a named volumn `docker run -d -p 3000:80 --rm --name feedback-app -v f
 
 
 #### Bind Mountes
+The subsequent changes in the code would reflect in the image unless we manually build the image again. We always have to build the image and restart the container everytime we make the change.
+Here's where the bind mount will help us. Bind mounte are perfect for persistance and editable data. 
+
+`docker run -d --rm -p 3000:80 --name feedback-app -v feedback:/app/feedback -v "/Users/path/to/your/app:/app" -v /app/node_modules image_name`
+
+1) the first volume `-v feedback:/app/feedback` is to make the saved feedback persists and also link our local system feedback folder to docker's /app/feedback
+2) the second volume `-v "/Users/path/to/your/app:/app"` is to make the docker internal volume mounted to our local folder to reflect the changes as we make changes to the code
+3) the third volume `-v /app/node_modules` is a anonymous volume created just to ignore the replacement of `node_modules` when the localstorage is mounted in docker's `/app` directory
+
+
+Overview
+1) Anonymos volumes  is created for a container and is removed when the container is stoped.
+2) Named volumes cannot be created in the Dockerfile should be created with the `-v` flag when running the container. Is not tied to a container
+3) In Bind Mounts we know where the data is stored in host machine 
+
+#### Readonly Volume.
+
 
 
 
