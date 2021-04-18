@@ -124,10 +124,44 @@ Run `docker build .` and `docker run -it image_name`
 
 
 ## Managing Data/Volumes in Images and Container
-...
+Three kinds of data are
+1) Application (Code / Environment) which is added to the container when the container is built and is Fixed cannot be changed once the container is built. This can be readonly because it is stored in image.
+2) Temporary Data (User input value stored in a variable) stored in memory or temporary files which is dynamic and changing but cleared regularly. This can be read / write because it is stored in container.
+3) Data that need to be persist data should be there even if the container stops. (Database stored data). Can be read/write and stored in container and volumes.
+
+### Example Node App for Data/Volume Management (V41/V42)
+![image](https://user-images.githubusercontent.com/21096850/115122164-3bcc6200-9fd6-11eb-9aaa-cca602729b71.png)
+
+Here the `temp` folder will contain the file that was created for temporary storage of form inputed data. The `temp's` file will be moved to the `feedback` folder to be saved permanently.
+
+#### Dockerising this example
+```Dockerfile
+FROM node:14
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 80
+
+COMMAND ["node" , "server"]
+```
+
+`docker build . -t feedback-node` to build the image and `docker run -p 3000:80 -d --name feed-app --rm feedback-node`
+
+#### Volumes
+Volumes are the folder on your host machine (Your Computer) which are mounted into containers. With volume you can map folder outside on a container to inside of a container so adding file to this folder container can access it and file added by the container we can access it. Because of this container allows us to persist data. Note: The volume must be named in order for it to survive because named volumn are not attached to container therefore it wonn't get deleted when the container stops.
+
+To create a named volumn `docker run -d -p 3000:80 --rm --name feedback-app -v feedback_storage:/app/feedback image_name`. Here `-v volumn_name:/volume/path` is defining a volumn in a path inside container.
 
 
 
+
+######################################################
 
 Now hit `-t hello-docker .` to create an image based on the instruction mentioned on the `Dockerfile` in the `.` directory.
 
