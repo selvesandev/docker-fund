@@ -177,6 +177,19 @@ Overview
 3) In Bind Mounts we know where the data is stored in host machine 
 
 #### Readonly Volume.
+.....
+
+
+
+
+## Networking and Cross Cotainer.
+1) How you can connect to multiple containers
+2) How you can let them talk to each other.
+3) Also how you can connect an application running on your container to your local host machine
+4) How you can reachout to the WWW.
+
+
+### Sending an HTTP request to an external API(WWW)
 
 
 
