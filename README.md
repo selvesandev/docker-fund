@@ -228,53 +228,14 @@ Here we are using `mongodb` as the host name because we used the `--name mongodb
 
 The ip replacement that is done `host.docker.internal` and cross container ip replacement with `containername` only happens when you are send a request.
 
+### Docker App (Frontend/Backend/MongoDB)
 
+__Step 1 (Localize Mongodb DB Container)__ Install Mongo DB and run it on detach mode and bind port 27017 to 27017 local port  
+`docker run --name mongodb -d -p 27017:27017 mongo` or `docker run --name mongodb --rm -d -p 27017:27017 mongo`  
+`docker log mongodb` to view the logs produced by the mongodb.
 
-######################################
-######################################################
-
-Now hit `-t hello-docker .` to create an image based on the instruction mentioned on the `Dockerfile` in the `.` directory.
-
-Finally `docker run -p 3000:80 hello-docker`. Here -p is published and 3000 is the local port under which you want to access this application and 80 is the docker container expose port
-
-Close the container `docker stop hello-docker`. `docker ps` to find the container name. `docker start container-name` to restart the stopped container because there is no need of creating contaner everytime.
-
-`docker run -p 3000:80 -d hello-docker` to start the container in detach mode. `docker attach hello-docker` to attach the detached container. `docker log -f container-name` to see the log of a detached container.
-
-1. mkdir `docker-example` && cd `docker-example`.
-2. create a `index.js` file and `console.log("Hello world")`.
-3. create a `Dockerfile` inside the root directory.
+__Step 2 (Dockerize Nodejs App)__ We are dockerizing the nodejs backend with docker.
 
 ```Dockerfile
-FROM node:alpine # minimalist version of node
-COPY . /app # copy everything from current working directory into the app folder
-WORKDIR /app # set the working directory here we have everything inside the app directory when you set the working direcotry every command is expected to be executed inside the WORKDIR.
 
-CMD node app.js #
 ```
-
-**Now we can build our application in docker**
-`docker build -t hello-docker .`
-Here `-t` is a tag to identify the project and `.` is the folder location where the `Dockerfile` is located.
-
-This command will build an docker image for our project. To see the built image `docker image ls`.
-
-Now that we have build this image we can run this image on any computer using docker with `docker run hello-docker`. We can also publish this image on docker hub so that anyone can use this image.
-
-## Play With Docker.
-
-You can also run this image on `play with docker` [Play with Docker](https://labs.play-with-docker.com)
-
-1. `docker version`
-2. `docker pull selvesan/docker101tutorial`
-3. verify the image was pulled with `docker images ` || `docker image ls`
-
-## Images
-
-Images are used behind the scenes to hold all the logic and all the code that container needs and then we create instances of the image with the `run` command. Container are the running instannces of those images.
-
-### Ubuntu Image.
-
-1. `docker run ubuntu` This command will run the ubuntu image if it's available on your system and if it's not available it will simply run the command `docker pull ubuntu`
-2. `docker ps` to view the running container. `docker ps -a` to view the running container as well as the stopped container.
-3. `docker run -it ubuntu`. Here the `-it` means the interactive mode.
