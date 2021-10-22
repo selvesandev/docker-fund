@@ -237,5 +237,20 @@ __Step 1 (Localize Mongodb DB Container)__ Install Mongo DB and run it on detach
 __Step 2 (Dockerize Nodejs App)__ We are dockerizing the nodejs backend with docker.
 
 ```Dockerfile
+FROM node
 
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 8080
+
+CMD ["node", "app.js"]
 ```
+
+  1) Create Image from the docker file `docker build -t goals-node .`
+  2) Spinup the image `docker run --name goals-backend --rm -p 8080:8080 goals-node`
