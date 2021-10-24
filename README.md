@@ -8,7 +8,7 @@ https://www.youtube.com/watch?v=pTFZFxd4hOI&ab_channel=ProgrammingwithMosh
 
 ![image](https://user-images.githubusercontent.com/21096850/114256102-8c8cfb00-99d7-11eb-8c6f-ee550e6871b5.png)
 
-## Development workflow.
+## Development workflow
 
 To dockerise a application we just have to add a `Dockerfile` in it. A `Dockerfile` is a set of instructions that docker uses to package this application into an image. This image contains everything that our package need in order to run. i.e
 
@@ -28,7 +28,7 @@ Images are the blue print for container, It's actually the images the contains e
 
 ### (Pre built or Existing Image on Docker Hub)
 
-```
+```bash
 docker run node //
 
 docker run -it node // run docker on interative mode.
@@ -42,7 +42,8 @@ FROM node
 
 WORKDIR /app
 
-COPY package.json /app # Copying the package.json file first because we don't want to run npm install command even when the internal code changes.
+#Copying the package.json file first because we don't want to run npm install command even when the internal code changes.
+COPY package.json /app 
 
 RUN npm install
 
@@ -71,7 +72,7 @@ Here the `COPY . /app` means copy the first path is outside of the image where t
 **WORKDIR /app**
 All the commands should be executed in the /app folder inside the container.
 
-## Managing Images & Container.
+## Managing Images & Container
 
 1. `docker ps` to list the running container `docker ps -a` to list also the stopped container.
 2. `docker start [image_name]` to restart the container because there is no need to create new container everytime if nothing has changed.
@@ -170,11 +171,11 @@ Overview
 2. Named volumes cannot be created in the Dockerfile should be created with the `-v` flag when running the container. Is not tied to a container
 3. In Bind Mounts we know where the data is stored in host machine
 
-#### Readonly Volume.
+#### Readonly Volume
 
 .....
 
-## Networking and Cross Cotainer.
+## Networking and Cross Cotainer
 
 1. How you can connect to multiple containers
 2. How you can let them talk to each other.
@@ -233,6 +234,7 @@ The ip replacement that is done `host.docker.internal` and cross container ip re
 __Step 1 (Localize Mongodb DB Container)__ Install Mongo DB and run it on detach mode and bind port 27017 to 27017 local port  
 `docker run --name mongodb -d -p 27017:27017 mongo` or `docker run --name mongodb --rm -d -p 27017:27017 mongo`  
 `docker log mongodb` to view the logs produced by the mongodb.
+  > to open the mongodb in interactive mode run `docker exec -it mongo /bin/bash`
 
 __Step 2 (Dockerize Nodejs App)__ We are dockerizing the nodejs backend with docker.
 
@@ -254,3 +256,50 @@ CMD ["node", "app.js"]
 
   1) Create Image from the docker file `docker build -t goals-node .`
   2) Spinup the image `docker run --name goals-backend --rm -p 8080:8080 goals-node`
+
+__Step 2 (Dockerize Frontend App)__ We are dockerizing the reactjs frontend with docker.
+
+```Dockerfile
+FROM node
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD [ "npm", "start"]
+```
+
+  1) Create Image from the docker file `docker build -t goals-react .`
+  2) Spinup the container with the created image `docker run --name goals-frontend --rm -d 3000:3000 -it goals-react`
+  3) You need to run the react container in interactive mode and hence `-it`
+
+__Step 3 (Cross Container Communication with Network)__ We are creating a common network for all our container so that they can efficiently communicate with one another. And if the containers are in the same netork they can communicate with each other without publishing a port.
+  
+  1) `docker network create goals-net` and `docker network ls`
+  2) Running the mongodb container in docker's network `docker run --name mongodb --rm -d --network goals-net mongo`
+  3) Running the backend container in docker's network `docker run --name goals-backend --rm --network goals-net goals-node`. Make sure you have updated the mongodb connection string to the container's name instead of `host.docker.internal` i.e `mongodb://mongodb:27017/course-goals`
+  4) Now run the frontend react container with `docker build -t goals-react . && docker run --name goals-frontend  --rm -p 3000:3000 -it goals-react`. Since the frontend application is running in the browser and not in docker network we don't specify the network here.
+  5) Now that the frontend react container is not related to the local docker network we need to publish the node's backend port for the frontend therefore stop your node container and run it again with `docker run --name goals-backend --network goals-net -p 8080:8080 goals-node`
+
+__Step 4 (Volumn Mount to persist mongodb data)__ That data stored in the mongodb is lost as soon as the container is deleted therefore in order to store all the data saved in the mongodb we will have to create a volume mount for the mongodb container.
+  
+  1) `docker run --name mongodb -v data:/data/db -d --network goals-net mongo`
+  2) username and password security for mongodb container with `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD`
+ `docker-fund % docker run --name mongodb -v data:/data/db -d --network goals-net -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=secret  mongo` and change the connection string to `mongodb://root:secret@mongodb:27017/course-goals`
+
+__Step 4 (Volumn Mount to persist nodejs data)__ We are using volume mount to persist the data inside our access log and to persist the changes done in the codes. We are going to create two volumes for this.
+  
+  1) `docker run --name goals-backend -v /Users/selvesan/dev/playground/docker-fund/backend:/app -v logs:/app/logs -v /app/node_modules --rm -p 8080:8080 --network goals-net goals-node`
+  2) Here `-v /Users/selvesan/dev/playground/docker-fund/backend:/app` is a bind mount for bind mount you need a full path of your local computer project's folder binded to the docker directory.
+  3) `-v logs:/app/logs`
+  4) `-v /app/node_modules` we are also mounting the node_modules folder to tell the container that the existing node_modules folder should stay inside the container and should not be overridden by the node_modules folder in our local machine if it is missing or gets deleted from there.
+
+__Step 5 (Volumn Mount to reactjs)__ We are mounting only the source directory since all the changes are done inside that folder.
+  
+  1) `docker run --name goals-frontend -v /Users/selvesan/dev/playground/docker-fund/frontend/src:/app/src --rm -p 3000:3000 -it goals-react`

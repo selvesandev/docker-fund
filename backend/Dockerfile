@@ -10,4 +10,6 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["node", "app.js"]
+ENV MONGO_DB_CONNECTION_STRING=mongodb://mongodb:27017/course-goals
+
+CMD ["npm", "start"]

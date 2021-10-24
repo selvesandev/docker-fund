@@ -74,8 +74,8 @@ app.delete('/goals/:id', async (req, res) => {
   console.log('TRYING TO DELETE GOAL');
   try {
     await Goal.deleteOne({ _id: req.params.id });
-    res.status(200).json({ message: 'Deleted goal!' });
-    console.log('DELETED GOAL');
+    res.status(200).json({ message: 'Deleted goal!!' });
+    console.log('DELETED GOAL !!');
   } catch (err) {
     console.error('ERROR FETCHING GOALS');
     console.error(err.message);
@@ -84,7 +84,7 @@ app.delete('/goals/:id', async (req, res) => {
 });
 
 mongoose.connect(
-  'mongodb://host.docker.internal:27017/course-goals',
+  `${process.env.MONGO_DB_CONNECTION_STRING}`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -94,7 +94,7 @@ mongoose.connect(
       console.error('FAILED TO CONNECT TO MONGODB');
       console.error(err);
     } else {
-      console.log('CONNECTED TO MONGODB');
+      console.log('CONNECTED TO MONGODB!!');
       app.listen(8080);
     }
   }
