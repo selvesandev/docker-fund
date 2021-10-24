@@ -303,3 +303,9 @@ __Step 4 (Volumn Mount to persist nodejs data)__ We are using volume mount to pe
 __Step 5 (Volumn Mount to reactjs)__ We are mounting only the source directory since all the changes are done inside that folder.
   
   1) `docker run --name goals-frontend -v /Users/selvesan/dev/playground/docker-fund/frontend/src:/app/src --rm -p 3000:3000 -it goals-react`
+
+### Docker Compose
+
+Is a super power docker tool that allows you to manage multiple docker build and docker run command with one configuration file and set of orchestration command to build all the containers and image.
+
+Docker compose will not relace Dockerfile. It will work with `Dockerfile`. Is not suitable for managing multiple container in different host.
